@@ -71,8 +71,8 @@ public class BootstrapLiveTest{
     @Test
     public void whenGetCreatedBookById_thenOK() {
         Pizza pizza = this.createNewPizza();
-        String location = this.createPizzaAsUri(pizza);
-        Response response = get(location);
+        String pizzaId = this.createPizzaAsUri(pizza);
+        Response response = get(pizzaId);
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
         assertEquals(pizza.getName(), response.jsonPath().get("name"));
@@ -124,12 +124,12 @@ public class BootstrapLiveTest{
     @Test
     public void whenDeleteCreatedPizza_thenOK() {
         Pizza pizza = this.createNewPizza();
-        String location = this.createPizzaAsUri(pizza);
-        Response response = delete(location);
+        String pizzaId = this.createPizzaAsUri(pizza);
+        Response response = delete(pizzaId);
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 
-        response = get(location);
+        response = get(pizzaId);
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
 }
