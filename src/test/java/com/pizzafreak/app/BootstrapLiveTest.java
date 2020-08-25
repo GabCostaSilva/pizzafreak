@@ -33,6 +33,8 @@ public class BootstrapLiveTest{
     @Before
     public void setUp() {
         RestAssured.port = port;
+        baseURI = "http://localhost";
+        basePath = "/api/pizzas";
     }
 
     private Pizza createNewPizza() {
@@ -46,7 +48,7 @@ public class BootstrapLiveTest{
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(pizza)
                 .post("/");
-        return  response.jsonPath().get("id");
+        return  response.jsonPath().get("id").toString();
     }
 
     @Test
@@ -101,19 +103,19 @@ public class BootstrapLiveTest{
     @Test
     public void whenUpdateCreatedPizza_thenUpdated() {
         Pizza pizza = this.createNewPizza();
-        String location = this.createPizzaAsUri(pizza);
-        pizza.setId(Long.parseLong(location.split("api/pizzas/")[1]));
+        String pizzaId = this.createPizzaAsUri(pizza);
+        pizza.setId(Long.parseLong(pizzaId));
         String newName = "Marguerita";
         pizza.setName(newName);
 
         Response response = given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(pizza)
-                .put(location);
+                .put(pizzaId);
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 
-        response = get(location);
+        response = get(pizzaId);
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
         assertEquals(newName, response.jsonPath().get("name"));
